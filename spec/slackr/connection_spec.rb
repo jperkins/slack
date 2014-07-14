@@ -9,20 +9,20 @@ describe Slackr::Connection do
     context "with invalid parameters" do
       it "raises an exception when token is nil" do
         expect {
-          Slackr::Connection.new('token')
+          Slackr::Connection.new(nil)
         }.to raise_error(Slackr::ArgumentError, 'token required')
       end
 
       it "raises an exception when token is blank" do
         expect {
-          Slackr::Connection.new('', 'token', 'username')
+          Slackr::Connection.new('')
         }.to raise_error(Slackr::ArgumentError, 'token required')
       end
     end
 
 
     context "with valid parameters" do
-      it "returns an instance of Slackr::Connection"
+      it "makes a call to auth.test"
     end
   end
 
