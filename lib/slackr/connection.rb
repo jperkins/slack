@@ -34,10 +34,10 @@ module Slackr
 
       response = @connection.request(request)
 
-      if response.body
-        JSON.parse(response.body.to_s)
+      if response.body.to_s == ''
+        raise Slackr::ServiceError, "Body of response was empty"
       else
-        ''
+        JSON.parse(response.body.to_s)
       end
     end
 

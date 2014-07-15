@@ -60,22 +60,25 @@ describe Slackr::Connection do
   describe "#request" do
     context "when the request to auth.test is made" do
       it "builds a path that includes the supplied method" do
-        stub_request(:get, "https://slack.com/api/auth.test?token=token-value")
+        stub_request(:get, "https://slack.com/api/auth.test?token=token").
+          to_return(:body => '{"ok": true}')
 
-        Slackr::Connection.new('token-value')
+        Slackr::Connection.new('token')
       end
 
       it "includes the token in the query string" do
         stub_request(:get, "https://slack.com/api/auth.test").
-          with(:query => { 'token' => 'token-value' })
+          with(:query => { 'token' => 'token' }).
+          to_return(:body => '{"ok": true}')
 
-        Slackr::Connection.new('token-value')
+        Slackr::Connection.new('token')
       end
 
       it "raises an exception if called without a method" do
-        stub_request(:get, "https://slack.com/api/auth.test?token=token-value")
+        stub_request(:get, "https://slack.com/api/auth.test?token=token").
+          to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token-value')
+        connection = Slackr::Connection.new('token')
 
         expect {
           connection.request
@@ -88,24 +91,44 @@ describe Slackr::Connection do
       it "makes an HTTP request that includes a User-Agent header" do
         stub_request(:get, "https://slack.com/api/auth.test").
           with(
-            :query => {'token' => 'token-value'},
+            :query => {'token' => 'token'},
             :headers => {'User-Agent' => 'Slack Ruby Client'}
-          )
+          ).to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token-value')
+        connection = Slackr::Connection.new('token')
       end
 
       it "makes an HTTP request that includes an Accept header" do
         stub_request(:get, "https://slack.com/api/auth.test").
           with(
-            :query => {'token' => 'token-value'},
+            :query => {'token' => 'token'},
             :headers => {'Accept' => 'application/json; charset=utf-8'}
-          )
+          ).to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token-value')
+        connection = Slackr::Connection.new('token')
       end
 
-      it "returns the body of the response as a JSON object"
+      it "returns the body of the response as a JSON object" do
+        response_body = %q|{"ok": true}|
+        auth_stub_with_response_body(response_body)
+
+        connection = Slackr::Connection.new('token')
+        response = connection.request('auth.test')
+
+        response.should be_an_instance_of Hash
+      end
+
+      it "raises an exception if response.body is empty" do
+        response_body = nil
+        auth_stub_with_response_body(response_body)
+
+        expect {
+          Slackr::Connection.new('token')
+        }.to raise_error(
+          Slackr::ServiceError,
+          'Body of response was empty'
+        )
+      end
     end
   end
 
