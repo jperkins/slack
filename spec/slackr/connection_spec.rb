@@ -20,9 +20,37 @@ describe Slackr::Connection do
       end
     end
 
-
     context "with valid parameters" do
-      it "makes a call to auth.test"
+      it "makes an HTTP request to test the authentication" do
+        response_body = %q|{"ok": true}|
+        auth_stub_with_response_body(response_body)
+
+        Slackr::Connection.new('token')
+      end
+
+      it "raises an exception when token is invalid" do
+        response_body = %q|{"ok": false, "error": "invalid_auth"}|
+        auth_stub_with_response_body(response_body)
+
+        expect {
+          Slackr::Connection.new('token')
+        }.to raise_error(
+          Slackr::AuthenticationError,
+          'Invalid authentication token.'
+        )
+      end
+
+      it "raises an exception when token is for deleted user or team" do
+        response_body = %q|{"ok": false, "error": "account_inactive"}|
+        auth_stub_with_response_body(response_body)
+
+        expect {
+          Slackr::Connection.new('token')
+        }.to raise_error(
+          Slackr::AuthenticationError,
+          'Authentication token is for a deleted user or team.'
+        )
+      end
     end
   end
 
@@ -30,8 +58,37 @@ describe Slackr::Connection do
   # request
   # -----------------------------------
   describe "#request" do
-    it "includes the token in each request"
+    it "url encodes the token and includes it in the query string"
 
-    it "makes the request against the domain with the team name as the subdomain"
+    it "builds a path that includes the supplied method"
+
+    it "raises an exception if called without a method"
+
+    it "makes an HTTP request that includes a User-Agent header"
+
+    it "makes an HTTP request that includes an Accept header"
+
+    it "returns the body of the response as a JSON object"
+
+  end
+
+
+private
+
+  def auth_stub_with_response_body(body)
+    stub_request(
+      :get,
+      "https://slack.com/api/auth.test"
+    ).with(
+      :query   => {"token" => 'token'},
+      :headers => {
+        'User-Agent' => 'Slack Ruby Client',
+        'Accept'     => 'application/json; charset=utf-8'
+      }
+    ).to_return(
+      :status  => 200,
+      :body    => body,
+      :headers => {}
+    )
   end
 end
