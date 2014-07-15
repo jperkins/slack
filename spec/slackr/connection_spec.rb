@@ -18,15 +18,6 @@ describe Slackr::Connection do
           Slackr::Connection.new('')
         }.to raise_error(Slackr::ArgumentError, 'token required')
       end
-    end
-
-    context "with valid parameters" do
-      it "makes an HTTP request to test the authentication" do
-        response_body = %q|{"ok": true}|
-        auth_stub_with_response_body(response_body)
-
-        Slackr::Connection.new('token')
-      end
 
       it "raises an exception when token is invalid" do
         response_body = %q|{"ok": false, "error": "invalid_auth"}|
@@ -52,24 +43,56 @@ describe Slackr::Connection do
         )
       end
     end
+
+    context "with valid parameters" do
+      it "makes an HTTP request to test the authentication" do
+        response_body = %q|{"ok": true}|
+        auth_stub_with_response_body(response_body)
+
+        Slackr::Connection.new('token')
+      end
+    end
   end
 
   # -----------------------------------
   # request
   # -----------------------------------
   describe "#request" do
-    it "url encodes the token and includes it in the query string"
+    context "when the request to auth.test is made" do
+      it "builds a path that includes the supplied method" do
+        stub_request(:get, "https://slack.com/api/auth.test?token=token-value")
 
-    it "builds a path that includes the supplied method"
+        Slackr::Connection.new('token-value')
+      end
 
-    it "raises an exception if called without a method"
+      it "includes the token in the query string" do
+        token = ''
 
-    it "makes an HTTP request that includes a User-Agent header"
+        stub_request(:get, "https://slack.com/api/auth.test").
+          with(:query => { 'token' => 'token-value' })
 
-    it "makes an HTTP request that includes an Accept header"
+        Slackr::Connection.new('token-value')
+      end
 
-    it "returns the body of the response as a JSON object"
+      it "raises an exception if called without a method" do
+        stub_request(:get, "https://slack.com/api/auth.test?token=token-value")
 
+        connection = Slackr::Connection.new('token-value')
+
+        expect {
+          connection.request
+        }.to raise_error(
+          Slackr::ArgumentError,
+          'No method provided in call to Connection#request'
+        )
+      end
+
+      it "makes an HTTP request that includes a User-Agent header"
+
+      it "makes an HTTP request that includes an Accept header"
+
+      it "returns the body of the response as a JSON object"
+    end
   end
 
 

@@ -18,7 +18,12 @@ module Slackr
       test_authentication
     end
 
-    def request(method)
+    def request(method='')
+      if method.to_s == ''
+        raise Slackr::ArgumentError,
+          "No method provided in call to Connection#request"
+      end
+
       query_string = URI::encode("token=#{@token}")
       path         = "#{@uri.request_uri}#{method}?#{query_string}"
 
@@ -29,7 +34,11 @@ module Slackr
 
       response = @connection.request(request)
 
-      JSON.parse(response.body)
+      if response.body
+        JSON.parse(response.body)
+      else
+        ''
+      end
     end
 
 
