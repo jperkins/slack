@@ -66,8 +66,6 @@ describe Slackr::Connection do
       end
 
       it "includes the token in the query string" do
-        token = ''
-
         stub_request(:get, "https://slack.com/api/auth.test").
           with(:query => { 'token' => 'token-value' })
 
@@ -87,9 +85,25 @@ describe Slackr::Connection do
         )
       end
 
-      it "makes an HTTP request that includes a User-Agent header"
+      it "makes an HTTP request that includes a User-Agent header" do
+        stub_request(:get, "https://slack.com/api/auth.test").
+          with(
+            :query => {'token' => 'token-value'},
+            :headers => {'User-Agent' => 'Slack Ruby Client'}
+          )
 
-      it "makes an HTTP request that includes an Accept header"
+        connection = Slackr::Connection.new('token-value')
+      end
+
+      it "makes an HTTP request that includes an Accept header" do
+        stub_request(:get, "https://slack.com/api/auth.test").
+          with(
+            :query => {'token' => 'token-value'},
+            :headers => {'Accept' => 'application/json; charset=utf-8'}
+          )
+
+        connection = Slackr::Connection.new('token-value')
+      end
 
       it "returns the body of the response as a JSON object"
     end
@@ -103,11 +117,7 @@ private
       :get,
       "https://slack.com/api/auth.test"
     ).with(
-      :query   => {"token" => 'token'},
-      :headers => {
-        'User-Agent' => 'Slack Ruby Client',
-        'Accept'     => 'application/json; charset=utf-8'
-      }
+      :query   => {"token" => 'token'}
     ).to_return(
       :status  => 200,
       :body    => body,

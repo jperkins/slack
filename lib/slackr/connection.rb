@@ -35,7 +35,7 @@ module Slackr
       response = @connection.request(request)
 
       if response.body
-        JSON.parse(response.body)
+        JSON.parse(response.body.to_s)
       else
         ''
       end
