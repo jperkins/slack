@@ -108,7 +108,7 @@ describe Slackr::Connection do
         connection = Slackr::Connection.new('token')
       end
 
-      it "returns the body of the response as a JSON object" do
+      it "returns the body of the response as a hash" do
         response_body = %q|{"ok": true}|
         auth_stub_with_response_body(response_body)
 
