@@ -34,11 +34,7 @@ class Slackr
 
       response = @connection.request(request)
 
-      if response.body.to_s == ''
-        raise Slackr::ServiceError, "Body of response was empty"
-      else
-        JSON.parse(response.body.to_s)
-      end
+      parse_response(response)
     end
 
 
@@ -52,8 +48,12 @@ class Slackr
       @connection.verify_mode = OpenSSL::SSL::VERIFY_PEER
     end
 
-    def test_authentication
-      response = self.request('auth.test')
+    def parse_response(response)
+      if response.body.to_s == ''
+        raise Slackr::ServiceError, "Body of response was empty"
+      else
+        response = JSON.parse(response.body.to_s)
+      end
 
       unless response['ok']
         if response['error'] == 'invalid_auth'
@@ -64,6 +64,12 @@ class Slackr
             "Authentication token is for a deleted user or team."
         end
       end
+
+      response
+    end
+
+    def test_authentication
+      response = self.request('auth.test')
     end
   end
 end
