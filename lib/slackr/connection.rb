@@ -5,7 +5,7 @@ require "open-uri"
 require "uri"
 
 
-module Slackr
+class Slackr
   class Connection
     def initialize(token)
       if token.to_s == ''

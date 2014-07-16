@@ -1,3 +1,3 @@
-module Slackr
-  VERSION = "0.0.3"
+class Slackr
+  VERSION = "0.0.1"
 end

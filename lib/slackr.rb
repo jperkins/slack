@@ -2,29 +2,10 @@ require "slackr/connection"
 require "slackr/errors"
 require "slackr/version"
 
-class Slackr
 
+class Slackr
   def initialize(token)
     @connection = Slackr::Connection.new(token)
-  end
-
-  # This method checks authentication and tells you who you are.
-  #
-  # == Example
-  #
-  # slackr = Slackr.new
-  # slackr.test_authentication
-  # =>
-  #  {
-  #      "ok": true,
-  #      "url": "https:\/\/riskio.slack.com\/",
-  #      "team": "Risk I\/O",
-  #      "user": "username",
-  #      "team_id": "TEAM_ID",
-  #      "user_id": "USER_ID"
-  #  }
-  def test_authentication
-    @connection.request('test.authentication')
   end
 
 	# Returns a list of all channels for the team.
@@ -44,8 +25,8 @@ class Slackr
 	#
 	# slackr.list_channels
 	# => [TODO: insert sample returned code]
-  def list_channels(exclude_archived=false)
-    @connection.request('channels.list', exclude_archived)
+  def list_channels(opts={})
+    response = @connection.request('channels.list', opts)
   end
 
   # Returns a portion of messages/events for the specified channel.
@@ -76,7 +57,7 @@ class Slackr
   #
   # == Arguments
   #
-  # * +channel_id+ Channel to fetch history for. Required.
+  # * +channel_id+ ID of channel to fetch history for. Required.
   #
   # * +latest+ Timestamp of the oldest recent seen message.
   # 	Optional, default=now.
@@ -94,8 +75,12 @@ class Slackr
 	# * +invalid_ts_latest+ Value passed for latest was invalid
 	#
 	# * +invalid_ts_oldest+ Value passed for oldest was invalid
-  def channel_history(channel_id)
-    @connection.request('channels.list', channel_id)
+  def channel_history(channel_id='', opts={})
+    if channel_id.to_s == ''
+      raise Slackr::ArgumentError,
+        "A channel id must be provided to Slackr#channel_history"
+    end
+
+    @connection.request('channels.history', channel_id)
   end
 end
-
