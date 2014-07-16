@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Slackr do
   context "#new" do
     before(:each) do
-      stub_request(:get, "https://slack.com/api/auth.test?token=token").
-        to_return(:body => '{"ok": true}')
+      stub_auth_test_invocation
     end
 
     it "returns an instance of Slackr" do
@@ -19,8 +18,7 @@ describe Slackr do
   # -----------------------------------
   context "#list_channels" do
     before(:each) do
-      stub_request(:get, "https://slack.com/api/auth.test?token=token").
-        to_return(:body => '{"ok": true}')
+      stub_auth_test_invocation
 
       @slackr = Slackr.new('token')
     end
@@ -39,9 +37,7 @@ describe Slackr do
   # -----------------------------------
   context "#channel_history" do
     before(:each) do
-      stub_request(:get, "https://slack.com/api/auth.test?token=token").
-        to_return(:body => '{"ok": true}')
-
+      stub_auth_test_invocation
       @slackr = Slackr.new('token')
     end
 
@@ -59,5 +55,13 @@ describe Slackr do
         Slackr::ArgumentError,
         "A channel id must be provided to Slackr#channel_history")
     end
+  end
+
+
+private
+
+  def stub_auth_test_invocation
+    stub_request(:get, "https://slack.com/api/auth.test?token=token").
+      to_return(:body => '{"ok": true}')
   end
 end
