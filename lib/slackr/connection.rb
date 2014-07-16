@@ -1,7 +1,7 @@
 require "json"
 require "net/http"
 require "net/https"
-require "open-uri"
+# require "open-uri"
 require "uri"
 
 
@@ -18,27 +18,42 @@ class Slackr
       test_authentication
     end
 
-    def request(method='')
-      if method.to_s == ''
+    def request(method_name='', opts={})
+      if method_name.to_s == ''
         raise Slackr::ArgumentError,
           "No method provided in call to Connection#request"
       end
 
-      query_string = URI::encode("token=#{@token}")
-      path         = "#{@uri.request_uri}#{method}?#{query_string}"
+      request = build_request(method_name, opts)
+
+      parse_response(@connection.request(request))
+    end
+
+
+  private
+
+    def build_query_string(opts={})
+      opts.merge!(:token => @token)
+      options = []
+
+      opts.map do |key, value|
+        options << "#{URI::encode(key.to_s)}=#{URI::encode(value.to_s)}"
+      end
+
+      options.join('&')
+    end
+
+    def build_request(method_name, opts)
+      query_string = build_query_string(opts)
+      path         = "#{@uri.request_uri}#{method_name}?#{query_string}"
 
       request = Net::HTTP::Get.new(path)
 
       request["User-Agent"] = "Slack Ruby Client"
       request["Accept"]     = "application/json; charset=utf-8"
 
-      response = @connection.request(request)
-
-      parse_response(response)
+      request
     end
-
-
-  private
 
     def establish_connection
       @uri = URI.parse("https://slack.com/api/")
@@ -52,20 +67,20 @@ class Slackr
       if response.body.to_s == ''
         raise Slackr::ServiceError, "Body of response was empty"
       else
-        response = JSON.parse(response.body.to_s)
+        json = JSON.parse(response.body.to_s)
       end
 
-      unless response['ok']
-        if response['error'] == 'invalid_auth'
+      unless json['ok']
+        if json['error'] == 'invalid_auth'
           raise Slackr::AuthenticationError,
             "Invalid authentication token."
-        elsif response['error'] == 'account_inactive'
+        elsif json['error'] == 'account_inactive'
           raise Slackr::AuthenticationError,
             "Authentication token is for a deleted user or team."
         end
       end
 
-      response
+      json
     end
 
     def test_authentication
