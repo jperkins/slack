@@ -21,7 +21,7 @@ class Slack
     def request(method_name='', opts={})
       if method_name.to_s == ''
         raise Slack::ArgumentError,
-          "No method provided in call to Connection#request"
+          "No method name provided"
       end
 
       request = build_request(method_name, opts)
