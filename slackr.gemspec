@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.version       = Slackr::VERSION
   spec.authors       = ["Jason Perkins"]
   spec.email         = ["jperkins@me.com"]
-  spec.description   = %q{Talk to slack.com chat platform from ruby}
-  spec.summary       = %q{Send data into Slack in real-time, via the Incoming Webhooks API}
-  spec.homepage      = "https://github.com/risk-io/slackr"
+  spec.description   = %q{Ruby client for the Slack service.}
+  spec.summary       = %q{Ruby client for the Slack service.}
+  spec.homepage      = "https://github.com/jperkins/slack"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
