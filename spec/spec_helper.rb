@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'slackr'
+require 'slack'
 require 'webmock/rspec'
 
 RSpec.configure do |config|

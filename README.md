@@ -1,4 +1,4 @@
-# Slackr
+# Slack
 
 Ruby client for the Slack service.
 
@@ -6,7 +6,7 @@ Ruby client for the Slack service.
 
 Add this line to your application's Gemfile:
 
-    gem 'slackr'
+    gem 'slack'
 
 And then execute:
 
@@ -14,21 +14,21 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install slackr
+    $ gem install slack
 
 ## Usage
 
-    slackr = Slackr.new(token)
-    slackr.test_authentication
+    slack = Slack.new(token)
+    slack.test_authentication
 
-    slackr.list_channels
-    slackr.channel_history(channel_id)
+    slack.list_channels
+    slack.channel_history(channel_id)
 
 
 
 ## Contributing
 
-1. Fork it ( https://github.com/jperkins/slackr/fork )
+1. Fork it ( https://github.com/jperkins/slack/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

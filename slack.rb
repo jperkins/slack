@@ -1,11 +1,11 @@
-require "slackr/connection"
-require "slackr/errors"
-require "slackr/version"
+require "slack/connection"
+require "slack/errors"
+require "slack/version"
 
 
-class Slackr
+class Slack
   def initialize(token)
-    @connection = Slackr::Connection.new(token)
+    @connection = Slack::Connection.new(token)
   end
 
 	# Returns a list of all channels for the team.
@@ -21,9 +21,9 @@ class Slackr
 	#
 	# == Examples
 	#
-	# slackr = Slackr.new(token)
+	# slack = Slack.new(token)
 	#
-	# slackr.list_channels
+	# slack.list_channels
 	# => [TODO: insert sample returned code]
   def list_channels(opts={})
     response = @connection.request('channels.list', opts)
@@ -77,8 +77,8 @@ class Slackr
 	# * +invalid_ts_oldest+ Value passed for oldest was invalid
   def channel_history(channel_id='', opts={})
     if channel_id.to_s == ''
-      raise Slackr::ArgumentError,
-        "A channel id must be provided to Slackr#channel_history"
+      raise Slack::ArgumentError,
+        "A channel id must be provided to Slack#channel_history"
     end
 
     @connection.request('channels.history', channel_id)

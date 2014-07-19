@@ -2,11 +2,11 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'slackr/version'
+require 'slack/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "slackr"
-  spec.version       = Slackr::VERSION
+  spec.name          = "slack"
+  spec.version       = Slack::VERSION
   spec.authors       = ["Jason Perkins"]
   spec.email         = ["jperkins@me.com"]
   spec.description   = %q{Ruby client for the Slack service.}

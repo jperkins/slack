@@ -5,11 +5,11 @@ require "net/https"
 require "uri"
 
 
-class Slackr
+class Slack
   class Connection
     def initialize(token)
       if token.to_s == ''
-        raise Slackr::ArgumentError, "token required"
+        raise Slack::ArgumentError, "token required"
       end
 
       @token = token
@@ -20,7 +20,7 @@ class Slackr
 
     def request(method_name='', opts={})
       if method_name.to_s == ''
-        raise Slackr::ArgumentError,
+        raise Slack::ArgumentError,
           "No method provided in call to Connection#request"
       end
 
@@ -65,17 +65,17 @@ class Slackr
 
     def parse_response(response)
       if response.body.to_s == ''
-        raise Slackr::ServiceError, "Body of response was empty"
+        raise Slack::ServiceError, "Body of response was empty"
       else
         json = JSON.parse(response.body.to_s)
       end
 
       unless json['ok']
         if json['error'] == 'invalid_auth'
-          raise Slackr::AuthenticationError,
+          raise Slack::AuthenticationError,
             "Invalid authentication token."
         elsif json['error'] == 'account_inactive'
-          raise Slackr::AuthenticationError,
+          raise Slack::AuthenticationError,
             "Authentication token is for a deleted user or team."
         end
       end

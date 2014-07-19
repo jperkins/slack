@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Slackr::Connection do
+describe Slack::Connection do
 
   # -----------------------------------
   # new
@@ -9,14 +9,14 @@ describe Slackr::Connection do
     context "with invalid parameters" do
       it "raises an exception when token is nil" do
         expect {
-          Slackr::Connection.new(nil)
-        }.to raise_error(Slackr::ArgumentError, 'token required')
+          Slack::Connection.new(nil)
+        }.to raise_error(Slack::ArgumentError, 'token required')
       end
 
       it "raises an exception when token is blank" do
         expect {
-          Slackr::Connection.new('')
-        }.to raise_error(Slackr::ArgumentError, 'token required')
+          Slack::Connection.new('')
+        }.to raise_error(Slack::ArgumentError, 'token required')
       end
 
       it "raises an exception when token is invalid" do
@@ -24,9 +24,9 @@ describe Slackr::Connection do
         auth_stub_with_response_body(response_body)
 
         expect {
-          Slackr::Connection.new('token')
+          Slack::Connection.new('token')
         }.to raise_error(
-          Slackr::AuthenticationError,
+          Slack::AuthenticationError,
           'Invalid authentication token.'
         )
       end
@@ -36,9 +36,9 @@ describe Slackr::Connection do
         auth_stub_with_response_body(response_body)
 
         expect {
-          Slackr::Connection.new('token')
+          Slack::Connection.new('token')
         }.to raise_error(
-          Slackr::AuthenticationError,
+          Slack::AuthenticationError,
           'Authentication token is for a deleted user or team.'
         )
       end
@@ -49,7 +49,7 @@ describe Slackr::Connection do
         response_body = %q|{"ok": true}|
         auth_stub_with_response_body(response_body)
 
-        Slackr::Connection.new('token')
+        Slack::Connection.new('token')
       end
     end
   end
@@ -63,7 +63,7 @@ describe Slackr::Connection do
         stub_request(:get, "https://slack.com/api/auth.test?token=token").
           to_return(:body => '{"ok": true}')
 
-        Slackr::Connection.new('token')
+        Slack::Connection.new('token')
       end
 
       it "includes the token in the query string" do
@@ -71,19 +71,19 @@ describe Slackr::Connection do
           with(:query => { 'token' => 'token' }).
           to_return(:body => '{"ok": true}')
 
-        Slackr::Connection.new('token')
+        Slack::Connection.new('token')
       end
 
       it "raises an exception if called without a method" do
         stub_request(:get, "https://slack.com/api/auth.test?token=token").
           to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token')
+        connection = Slack::Connection.new('token')
 
         expect {
           connection.request
         }.to raise_error(
-          Slackr::ArgumentError,
+          Slack::ArgumentError,
           'No method provided in call to Connection#request'
         )
       end
@@ -95,7 +95,7 @@ describe Slackr::Connection do
             :headers => {'User-Agent' => 'Slack Ruby Client'}
           ).to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token')
+        connection = Slack::Connection.new('token')
       end
 
       it "makes an HTTP request that includes an Accept header" do
@@ -105,14 +105,14 @@ describe Slackr::Connection do
             :headers => {'Accept' => 'application/json; charset=utf-8'}
           ).to_return(:body => '{"ok": true}')
 
-        connection = Slackr::Connection.new('token')
+        connection = Slack::Connection.new('token')
       end
 
       it "returns the body of the response as a hash" do
         response_body = %q|{"ok": true}|
         auth_stub_with_response_body(response_body)
 
-        connection = Slackr::Connection.new('token')
+        connection = Slack::Connection.new('token')
         response = connection.request('auth.test')
 
         response.should be_an_instance_of Hash
@@ -123,9 +123,9 @@ describe Slackr::Connection do
         auth_stub_with_response_body(response_body)
 
         expect {
-          Slackr::Connection.new('token')
+          Slack::Connection.new('token')
         }.to raise_error(
-          Slackr::ServiceError,
+          Slack::ServiceError,
           'Body of response was empty'
         )
       end
