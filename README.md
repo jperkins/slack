@@ -18,11 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-slackr = Slackr.new(token)
-slackr.test_authentication
+    slackr = Slackr.new(token)
+    slackr.test_authentication
 
-slackr.list_channels
-slackr.channel_history(channel_id)
+    slackr.list_channels
+    slackr.channel_history(channel_id)
 
 
 
