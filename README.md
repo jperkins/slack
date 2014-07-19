@@ -1,6 +1,6 @@
 # Slackr
 
-TODO: Write a gem description
+Ruby client for the Slack service.
 
 ## Installation
 
