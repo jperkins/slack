@@ -84,7 +84,7 @@ describe Slack::Connection do
           connection.request
         }.to raise_error(
           Slack::ArgumentError,
-          'No method provided in call to Connection#request'
+          'No method name provided'
         )
       end
 
